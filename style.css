@@ -1,0 +1,90 @@
+/* Default light mode styles */
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
+  color: #000;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+
+/* Canvas styles */
+#decibelChart {
+  display: block;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+body.dark-mode #decibelChart {
+  border-color: #444;
+  background-color: #1e1e1e;
+}
+
+.container {
+  margin-top: 50px;
+}
+
+#decibelLevel {
+  font-size: 48px;
+  margin: 20px 0;
+}
+
+input[type="number"] {
+  font-size: 24px;
+  width: 80px;
+}
+
+button {
+  font-size: 24px;
+  padding: 10px 20px;
+  margin-top: 20px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+}
+
+#themeToggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+/* Light mode button styles */
+button {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+input[type="number"] {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+/* Dark mode styles */
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+body.dark-mode button {
+  background-color: #1e1e1e;
+  color: #ffffff;
+}
+
+body.dark-mode input[type="number"] {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  border: 1px solid #444;
+}
+
+/* Button hover effects */
+button:hover {
+  opacity: 0.9;
+}
+
