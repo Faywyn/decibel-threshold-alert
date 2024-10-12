@@ -1,58 +1,79 @@
-/* Default light mode styles */
+/* Base styles */
 body {
   font-family: Arial, sans-serif;
-  text-align: center;
   margin: 0;
   padding: 0;
-  background-color: #f0f0f0;
-  color: #000;
   transition: background-color 0.3s, color 0.3s;
 }
 
-
-/* Canvas styles */
-#decibelChart {
-  display: block;
-  margin: 20px auto;
-  border: 1px solid #ccc;
-  background-color: #fff;
+/* No selection highlight */
+::selection {
+  background-color: transparent;
 }
 
-body.dark-mode #decibelChart {
-  border-color: #444;
-  background-color: #1e1e1e;
-}
 
+/* Container styling */
 .container {
-  margin-top: 50px;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+/* Responsive typography */
+h1 {
+  font-size: 2em;
 }
 
 #decibelLevel {
-  font-size: 48px;
+  font-size: 3em;
   margin: 20px 0;
 }
 
 input[type="number"] {
-  font-size: 24px;
-  width: 80px;
+  font-size: 1.5em;
+  width: 100px;
 }
 
 button {
-  font-size: 24px;
+  font-size: 1.2em;
   padding: 10px 20px;
-  margin-top: 20px;
   cursor: pointer;
   border: none;
   border-radius: 5px;
 }
 
-#themeToggle {
-  position: absolute;
-  top: 20px;
-  right: 20px;
+button:hover {
+  opacity: 0.9;
 }
 
-/* Light mode button styles */
+.controls {
+  margin: 20px 0;
+}
+
+/* Chart styling */
+.chart-container {
+  position: relative;
+  width: 100%;
+  padding-top: 50%;
+  /* Aspect ratio of 2:1 (height/width = 0.5) */
+}
+
+#decibelChart {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Light mode styles */
+body {
+  background-color: #f0f0f0;
+  color: #000;
+}
+
 button {
   background-color: #ffffff;
   color: #000000;
@@ -64,6 +85,18 @@ input[type="number"] {
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 5px;
+  border: none;
+  height: 20px;
+  width: 50px;
+  font-size: 1em;
+}
+
+input[type="number"]:focus {
+  outline: none;
+}
+
+#decibelLevel {
+  padding: 20px;
 }
 
 /* Dark mode styles */
@@ -83,8 +116,89 @@ body.dark-mode input[type="number"] {
   border: 1px solid #444;
 }
 
-/* Button hover effects */
-button:hover {
-  opacity: 0.9;
+/* Toggle Switch Styles */
+.switch {
+  border-radius: 34px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 60px;
+  height: 30px;
+  cursor: pointer;
+  background-color: #ffffff;
 }
 
+body.dark-mode .switch {
+  background-color: #2e2e2e;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  transition: background-color 0.4s;
+}
+
+/* The toggle thumb */
+.slider:before {
+  background-color: #f0f0f0;
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  border-radius: 50%;
+  top: 2px;
+  /* Changed from bottom: 4px; to top: 4px; */
+  transition: transform 0.4s;
+  z-index: 2;
+}
+
+/* Sun and Moon Icons */
+.slider .sun,
+.slider .moon {
+  position: absolute;
+  font-size: 18px;
+  transition: opacity 0.4s;
+  top: 1px;
+}
+
+.slider .sun {
+  right: 5px;
+}
+
+.slider .moon {
+  left: 3px;
+}
+
+/* When checked */
+.switch input:checked+.slider:before {
+  transform: translateX(-30px);
+}
+
+body.dark-mode .slider:before {
+  background-color: #121212;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  #decibelLevel {
+    font-size: 2.5em;
+  }
+
+  input[type="number"] {
+    font-size: 1.2em;
+    width: 80px;
+  }
+
+  button {
+    font-size: 1em;
+  }
+
+  h1 {
+    font-size: 1.5em;
+  }
+}

@@ -1,22 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Decibel Meter</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Decibel Meter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Link to the updated CSS file -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
     <h1>Decibel Meter</h1>
-    <button id="themeToggle">Switch to Dark Mode</button>
-    <div>
+    <!-- Dark Mode Toggle Switch with Sun and Moon Icons -->
+    <label class="switch" id="themeToggle">
+      <input type="checkbox" >
+      <span class="slider round">
+        <span class="sun">☀️</span>
+        <span class="moon">🌙</span>
+      </span>
+    </label>
+    <div class="controls">
       <label for="threshold">Threshold (dB): </label>
       <input type="number" id="threshold" value="70">
     </div>
     <div id="decibelLevel">0 dB</div>
     <button id="startButton">Start</button>
     <!-- Canvas for the chart -->
-    <canvas id="decibelChart" width="800" height="200"></canvas>
+    <div class="chart-container">
+      <canvas id="decibelChart"></canvas>
+    </div>
   </div>
 
   <!-- Audio element for alert sound -->
@@ -26,4 +37,3 @@
   <script src="app.js"></script>
 </body>
 </html>
-

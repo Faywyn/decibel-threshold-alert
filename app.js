@@ -1,9 +1,11 @@
+// Get DOM elements
 const startButton = document.getElementById('startButton');
 const decibelLevelDisplay = document.getElementById('decibelLevel');
 const thresholdInput = document.getElementById('threshold');
 const alertSound = document.getElementById('alertSound');
 const themeToggle = document.getElementById('themeToggle');
 
+// Audio variables
 let audioContext;
 let microphone;
 let analyser;
@@ -19,8 +21,35 @@ const historyLength = 30; // Number of samples for moving average
 let aboveThresholdStartTime = null;
 const thresholdDuration = 1000; // Duration in milliseconds
 
+// Get canvas and context
+const canvas = document.getElementById('decibelChart');
+const ctx = canvas.getContext('2d');
+
+// Variables for chart
+let chartWidth = canvas.clientWidth;
+let chartHeight = canvas.clientHeight;
+const dataPoints = [];
+let maxDataPoints = 600; // Will be adjusted based on frame rate
+
+// Resize canvas to fit container
+function resizeCanvas() {
+  chartWidth = canvas.clientWidth;
+  chartHeight = canvas.clientHeight;
+  canvas.width = chartWidth;
+  canvas.height = chartHeight;
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas(); // Initial resize
+
+// Adjust maxDataPoints based on desired duration and estimated frame rate
+const chartDuration = 10; // Duration in seconds
+const estimatedFrameRate = 60; // Adjust if necessary
+maxDataPoints = chartDuration * estimatedFrameRate;
+
 startButton.addEventListener('click', () => {
   if (!isRunning) {
+    resizeCanvas(); // Ensure canvas is resized before starting
     startDecibelMeter();
     startButton.textContent = 'Stop';
   } else {
@@ -55,82 +84,11 @@ function stopDecibelMeter() {
   if (rafID) {
     cancelAnimationFrame(rafID);
   }
-  // Reset the aboveThresholdStartTime
+  // Reset variables
   aboveThresholdStartTime = null;
-  // Clear decibel history
   decibelHistory.length = 0;
+  dataPoints.length = 0;
 }
-
-function updateDecibelMeter() {
-  analyser.getByteTimeDomainData(dataArray);
-
-  // Calculate RMS (Root Mean Square)
-  let sumSquares = 0;
-  for (let i = 0; i < dataArray.length; i++) {
-    const normalized = (dataArray[i] - 128) / 128;
-    sumSquares += normalized * normalized;
-  }
-  const rms = Math.sqrt(sumSquares / dataArray.length);
-  let decibels = 20 * Math.log10(rms);
-
-  // Shift decibels to positive values
-  decibels += 100; // Adjust the offset as needed
-
-  // Add decibel value to history
-  decibelHistory.push(decibels);
-  if (decibelHistory.length > historyLength) {
-    decibelHistory.shift();
-  }
-
-  // Calculate moving average
-  const averageDecibels = decibelHistory.reduce((a, b) => a + b, 0) / decibelHistory.length;
-
-  decibelLevelDisplay.textContent = `${averageDecibels.toFixed(1)} dB`;
-
-  const threshold = parseFloat(thresholdInput.value);
-
-  // Check if decibel level is above threshold
-  if (averageDecibels > threshold) {
-    if (aboveThresholdStartTime === null) {
-      // Record the time when the decibel level first exceeded the threshold
-      aboveThresholdStartTime = Date.now();
-    } else {
-      // Check if decibel level has been above threshold for more than 1 second
-      const elapsedTime = Date.now() - aboveThresholdStartTime;
-      if (elapsedTime >= thresholdDuration) {
-        // Play the alert sound and reset the start time to prevent repeated alerts
-        alertSound.play();
-        aboveThresholdStartTime = null; // Reset to avoid multiple triggers
-      }
-    }
-  } else {
-    // Reset the start time if decibel level drops below threshold
-    aboveThresholdStartTime = null;
-  }
-
-  rafID = requestAnimationFrame(updateDecibelMeter);
-}
-
-// Theme toggle functionality
-themeToggle.addEventListener('click', () => {
-  document.body.classList.toggle('dark-mode');
-  if (document.body.classList.contains('dark-mode')) {
-    themeToggle.textContent = 'Switch to Light Mode';
-  } else {
-    themeToggle.textContent = 'Switch to Dark Mode';
-  }
-});
-
-
-// Get canvas and context
-const canvas = document.getElementById('decibelChart');
-const ctx = canvas.getContext('2d');
-
-// Variables for chart
-const chartWidth = canvas.width;
-const chartHeight = canvas.height;
-const dataPoints = [];
-const maxDataPoints = 600; // Assuming 60 updates per second, 600 points = 10 seconds
 
 function updateDecibelMeter() {
   analyser.getByteTimeDomainData(dataArray);
@@ -230,3 +188,19 @@ function updateChart(decibelValue, threshold) {
   ctx.stroke();
 }
 
+// Theme toggle functionality with icons
+// Check for saved theme in localStorage
+if (localStorage.getItem('theme') === 'dark') {
+  document.body.classList.add('dark-mode');
+  themeToggle.checked = true;
+}
+
+// Theme toggle functionality
+themeToggle.addEventListener('change', () => {
+  document.body.classList.toggle('dark-mode');
+  if (document.body.classList.contains('dark-mode')) {
+    localStorage.setItem('theme', 'dark');
+  } else {
+    localStorage.setItem('theme', 'light');
+  }
+});
