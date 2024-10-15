@@ -2,7 +2,6 @@
 const startButton = document.getElementById('startButton');
 const decibelLevelDisplay = document.getElementById('decibelLevel');
 const thresholdInput = document.getElementById('threshold');
-const alertSound = document.getElementById('alertSound');
 const themeToggle = document.getElementById('themeToggle');
 
 // Audio variables
@@ -19,7 +18,7 @@ const historyLength = 30; // Number of samples for moving average
 
 // Variables to track threshold duration
 let aboveThresholdStartTime = null;
-const thresholdDuration = 1000; // Duration in milliseconds
+const thresholdDuration = 2000; // Duration in milliseconds
 
 // Get canvas and context
 const canvas = document.getElementById('decibelChart');
@@ -130,8 +129,8 @@ function updateDecibelMeter() {
       // Check if decibel level has been above threshold for more than 1 second
       const elapsedTime = Date.now() - aboveThresholdStartTime;
       if (elapsedTime >= thresholdDuration) {
-        // Play the alert sound and reset the start time to prevent repeated alerts
-        alertSound.play();
+        // Play three fast beeps and reset the start time to prevent repeated alerts
+        playBeep();
         aboveThresholdStartTime = null; // Reset to avoid multiple triggers
       }
     }
@@ -186,6 +185,44 @@ function updateChart(decibelValue, threshold) {
   ctx.strokeStyle = '#ff0000'; // Red color for threshold line
   ctx.lineWidth = 1;
   ctx.stroke();
+}
+
+// Function to play three fast beeps
+function playBeep() {
+  // Create a new audio context
+  const beepContext = new (window.AudioContext || window.webkitAudioContext)();
+
+  const duration = 150; // Beep duration in milliseconds
+  const pause = 100; // Pause between beeps in milliseconds
+  const frequency = 1500; // Frequency in Hz
+  const volume = 0.5; // Volume (0 to 1)
+  const type = 'sine'; // Waveform type
+
+  // Function to play a single beep
+  function beep(timeOffset) {
+    const oscillator = beepContext.createOscillator();
+    oscillator.frequency.value = frequency;
+    oscillator.type = type;
+
+    const gainNode = beepContext.createGain();
+    gainNode.gain.value = volume;
+
+    oscillator.connect(gainNode);
+    gainNode.connect(beepContext.destination);
+
+    oscillator.start(beepContext.currentTime + timeOffset);
+    oscillator.stop(beepContext.currentTime + timeOffset + duration / 1000);
+  }
+
+  // Schedule three beeps
+  beep(0); // First beep at timeOffset = 0
+  beep((duration + pause) / 1000); // Second beep after duration + pause
+  beep(2 * (duration + pause) / 1000); // Third beep after two durations and pauses
+
+  // Close the context after the last beep
+  setTimeout(() => {
+    beepContext.close();
+  }, 3 * (duration + pause));
 }
 
 // Theme toggle functionality with icons
