@@ -2,14 +2,41 @@
 const startButton = document.getElementById('startButton');
 const decibelLevelDisplay = document.getElementById('decibelLevel');
 const thresholdInput = document.getElementById('threshold');
+const thresholdDurationInput = document.getElementById('thresholdDuration');
 const themeToggle = document.getElementById('themeToggle');
+const voiceOnlyToggle = document.getElementById('voiceOnlyToggle');
 
 // Variables
 let isRunning = false;
 window.rafID = null;
 window.aboveThresholdStartTime = null;
-window.thresholdDuration = 2000; // Duration in milliseconds
+window.thresholdDuration = parseInt(thresholdDurationInput.value); // Duration in milliseconds
 let wakeLock = null;
+
+// Update thresholdDuration when input changes
+thresholdDurationInput.addEventListener('input', () => {
+  window.thresholdDuration = parseInt(thresholdDurationInput.value);
+});
+
+// Voice Only filter flag
+window.voiceOnly = false;
+
+// Voice Only toggle button event listener
+voiceOnlyToggle.addEventListener('click', () => {
+  window.voiceOnly = !window.voiceOnly;
+  if (window.voiceOnly) {
+    voiceOnlyToggle.textContent = 'On';
+    voiceOnlyToggle.classList.add('active');
+    voiceOnlyToggle.classList.remove('inactive');
+  } else {
+    voiceOnlyToggle.textContent = 'Off';
+    voiceOnlyToggle.classList.add('inactive');
+    voiceOnlyToggle.classList.remove('active');
+  }
+  if (isRunning && window.updateFilterType) {
+    window.updateFilterType(window.voiceOnly);
+  }
+});
 
 // Chart variables
 const canvas = document.getElementById('decibelChart');
@@ -72,9 +99,9 @@ function updateChart(decibelValue, threshold) {
 
   // Set line style based on theme
   if (document.body.classList.contains('dark-mode')) {
-    ctx.strokeStyle = '#00bfff'; // Light blue for dark mode
+    ctx.strokeStyle = '#85d0f4'; // Lighter picton-blue for dark mode
   } else {
-    ctx.strokeStyle = '#0077ff'; // Blue for light mode
+    ctx.strokeStyle = '#0e7fbb'; // Darker picton-blue for light mode
   }
   ctx.lineWidth = 2;
   ctx.stroke();
@@ -127,16 +154,18 @@ document.addEventListener('visibilitychange', async () => {
 // Check for saved theme in localStorage
 if (localStorage.getItem('theme') === 'dark') {
   document.body.classList.add('dark-mode');
-  themeToggle.checked = true;
+  themeToggle.textContent = 'Light';
 }
 
 // Theme toggle event listener
-themeToggle.addEventListener('change', () => {
+themeToggle.addEventListener('click', () => {
   document.body.classList.toggle('dark-mode');
   if (document.body.classList.contains('dark-mode')) {
     localStorage.setItem('theme', 'dark');
+    themeToggle.textContent = 'Light';
   } else {
     localStorage.setItem('theme', 'light');
+    themeToggle.textContent = 'Dark';
   }
 });
 

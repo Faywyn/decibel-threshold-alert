@@ -1,19 +1,24 @@
 # Decibel Threshold Alert
 
-A simple web-based decibel meter that plays an alert sound when the decibel level exceeds a specified threshold for more than 1 second.
+A web-based decibel meter that monitors noise levels and alerts when thresholds are exceeded. Ideal for classrooms
+and noise-sensitive environments.
 
 ## Features
 
-- **Real-time Decibel Measurement:** Uses your device's microphone to measure sound levels.
-- **Custom Threshold Setting:** Allows you to set a decibel threshold value.
-- **Alert Sound:** Plays an alert sound if the decibel level remains above the threshold for over 1 second.
-- **Pure JavaScript Implementation:** Built with HTML, CSS, and JavaScript—no frameworks required.
+- Real-time decibel level monitoring using the Web Audio API.
+- Visual representation of noise levels with a dynamic chart.
+- Adjustable parameters:
+  - Decibel Threshold (dB)
+  - Threshold Duration (ms)
+  - Voice Only Filter (On/Off)
+- Audio alerts when noise levels exceed the threshold.
+- Dark and Light themes with a toggle button.
+- Responsive design suitable for various screen sizes.
+- Wake Lock API to prevent the device from sleeping during monitoring.
 
 ## Website (Github Pages)
 
 [Decibel Threshold Alert](https://faywyn.github.io/decibel-threshold-alert/)
-
-## Getting Started
 
 ### Prerequisites
 

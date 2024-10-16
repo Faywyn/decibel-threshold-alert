@@ -3,10 +3,15 @@ let audioContext;
 let microphone;
 let analyser;
 let dataArray;
+let bandPassFilter;
 
 // Variables for moving average
 const decibelHistory = [];
 const historyLength = 60; // Number of samples for moving average
+
+// Variables for beeping and cooldown
+let lastBeepTime = 0; // Timestamp of the last beep sequence
+const beepCooldown = 1000; // Cooldown period in milliseconds
 
 // Function to start the decibel meter
 function startDecibelMeter() {
@@ -15,30 +20,11 @@ function startDecibelMeter() {
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
       microphone = audioContext.createMediaStreamSource(stream);
 
-      // Create a band-pass filter
-      const bandPassFilter = audioContext.createBiquadFilter();
-      bandPassFilter.type = 'bandpass';
-      bandPassFilter.frequency.value = 1000; // Center frequency in Hz
-      bandPassFilter.Q = 0.707; // Quality factor
-
-      // Adjust lower and upper cutoff frequencies
-      const lowerFrequency = 300;   // Lower cutoff frequency in Hz
-      const upperFrequency = 3400;  // Upper cutoff frequency in Hz
-
-      // Calculate bandwidth and center frequency
-      const bandwidth = upperFrequency - lowerFrequency;
-      const centerFrequency = lowerFrequency + bandwidth / 2;
-
-      // Update filter parameters
-      bandPassFilter.frequency.value = centerFrequency;
-      bandPassFilter.Q = centerFrequency / bandwidth;
-
       analyser = audioContext.createAnalyser();
       analyser.fftSize = 2048;
 
-      // Connect nodes: microphone -> band-pass filter -> analyser
-      microphone.connect(bandPassFilter);
-      bandPassFilter.connect(analyser);
+      // Initialize filter and connections
+      setupFilter(window.voiceOnly);
 
       dataArray = new Uint8Array(analyser.fftSize);
 
@@ -48,6 +34,45 @@ function startDecibelMeter() {
       console.error('Error accessing the microphone:', err);
       alert('Microphone access denied or not available.');
     });
+}
+
+// Function to set up filter based on voiceOnly flag
+function setupFilter(voiceOnly) {
+  // Disconnect previous connections if any
+  if (microphone) {
+    microphone.disconnect();
+  }
+  if (bandPassFilter) {
+    bandPassFilter.disconnect();
+  }
+
+  if (voiceOnly) {
+    // Create a band-pass filter
+    bandPassFilter = audioContext.createBiquadFilter();
+    bandPassFilter.type = 'bandpass';
+
+    // Set filter frequencies for human voice
+    const lowerFrequency = 300;
+    const upperFrequency = 3400;
+    const bandwidth = upperFrequency - lowerFrequency;
+    const centerFrequency = lowerFrequency + bandwidth / 2;
+    const Q = centerFrequency / bandwidth;
+
+    bandPassFilter.frequency.value = centerFrequency;
+    bandPassFilter.Q = Q;
+
+    // Connect nodes: microphone -> band-pass filter -> analyser
+    microphone.connect(bandPassFilter);
+    bandPassFilter.connect(analyser);
+  } else {
+    // Connect microphone directly to analyser
+    microphone.connect(analyser);
+  }
+}
+
+// Function to update filter type dynamically
+function updateFilterType(voiceOnly) {
+  setupFilter(voiceOnly);
 }
 
 // Function to stop the decibel meter
@@ -63,6 +88,7 @@ function stopDecibelMeter() {
   window.aboveThresholdStartTime = null;
   decibelHistory.length = 0;
   window.dataPoints.length = 0;
+  lastBeepTime = 0; // Reset last beep time
 }
 
 // Function to update the decibel meter
@@ -97,18 +123,25 @@ function updateDecibelMeter() {
 
   const threshold = parseFloat(window.thresholdInput.value);
 
+  const currentTime = Date.now();
+
   // Check if decibel level is above threshold
   if (averageDecibels > threshold) {
     if (window.aboveThresholdStartTime === null) {
       // Record the time when the decibel level first exceeded the threshold
-      window.aboveThresholdStartTime = Date.now();
+      window.aboveThresholdStartTime = currentTime;
     } else {
       // Check if decibel level has been above threshold for more than the threshold duration
-      const elapsedTime = Date.now() - window.aboveThresholdStartTime;
+      const elapsedTime = currentTime - window.aboveThresholdStartTime;
       if (elapsedTime >= window.thresholdDuration) {
-        // Play three fast beeps and reset the start time to prevent repeated alerts
-        playBeep();
-        window.aboveThresholdStartTime = null; // Reset to avoid multiple triggers
+        // Check if cooldown period has passed since the last beep
+        if (currentTime - lastBeepTime >= beepCooldown) {
+          // Play three fast beeps and update the last beep time
+          playBeep();
+          lastBeepTime = currentTime;
+        }
+        // Reset aboveThresholdStartTime to avoid immediate re-trigger
+        window.aboveThresholdStartTime = currentTime;
       }
     }
   } else {
@@ -163,3 +196,4 @@ function playBeep() {
 // Expose functions to app.js
 window.startDecibelMeter = startDecibelMeter;
 window.stopDecibelMeter = stopDecibelMeter;
+window.updateFilterType = updateFilterType;
