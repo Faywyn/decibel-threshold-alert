@@ -8,19 +8,20 @@ body {
   overflow: hidden
 }
 
-/* Picton Blue Color Theme */
 :root {
-  --picton-blue-50: #f1f9fe;
-  --picton-blue-100: #e2f2fc;
-  --picton-blue-200: #bee5f9;
-  --picton-blue-300: #85d0f4;
-  --picton-blue-400: #57bfee;
-  --picton-blue-500: #1c9fdb;
-  --picton-blue-600: #0e7fbb;
-  --picton-blue-700: #0d6597;
-  --picton-blue-800: #0f577d;
-  --picton-blue-900: #124868;
-  --picton-blue-950: #0c2e45;
+  --color-50: #eefff6;
+  --color-100: #d6ffec;
+  --color-200: #b0ffdb;
+  --color-300: #72ffc1;
+  --color-400: #3afaa3;
+  --color-500: #03e47f;
+  --color-600: #00bd65;
+  --color-700: #019453;
+  --color-800: #077444;
+  --color-900: #085f3b;
+  --color-950: #00361f;
+  --black: #0e0e11;
+  --white: #ffffff;
 }
 
 /* Header styling */
@@ -28,15 +29,17 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--picton-blue-500);
-  color: #ffffff;
   padding: 10px 20px;
+  border-bottom: 1px solid #cccccc;
 }
 
 header h1 {
   margin: 0;
   font-size: 1.5em;
-  color: inherit;
+  border-radius: 5px;
+  padding: 5px 10px;
+  border: 1px solid var(--color-600);
+  color: var(--color-600);
 }
 
 .header-controls {
@@ -45,33 +48,30 @@ header h1 {
 }
 
 .github-link {
-  color: #ffffff;
+  color: var(--black);
   text-decoration: none;
   margin-left: 15px;
-}
-
-.github-link svg {
-  fill: currentColor;
-}
-
-.github-link:hover {
-  color: var(--picton-blue-200);
 }
 
 /* Theme toggle button */
 .theme-button {
   padding: 8px 12px;
   font-size: 1em;
-  background-color: var(--picton-blue-700);
-  color: #ffffff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
-.theme-button:hover {
-  background-color: var(--picton-blue-600);
+.button {
+  border: 1px solid var(--color-600);
+  color: var(--color-600);
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: var(--white);
 }
+
+.button:hover {
+  border: 1px solid var(--color-700);
+  color: var(--color-700);
+}
+
 
 /* Container styling */
 .container {
@@ -119,7 +119,7 @@ header h1 {
 }
 
 .voice-button.active {
-  background-color: var(--picton-blue-500);
+  background-color: var(--color-500);
   color: #ffffff;
 }
 
@@ -129,7 +129,7 @@ header h1 {
 }
 
 .voice-button:hover {
-  background-color: var(--picton-blue-100);
+  background-color: var(--color-100);
 }
 
 /* Decibel level display */
@@ -145,15 +145,6 @@ header h1 {
   margin: 0 auto;
   padding: 15px 30px;
   font-size: 1.2em;
-  background-color: var(--picton-blue-500);
-  color: #ffffff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#startButton:hover {
-  background-color: var(--picton-blue-600);
 }
 
 /* Chart styling */
@@ -175,50 +166,60 @@ header h1 {
 
 /* Footer styling */
 footer {
-  background-color: var(--picton-blue-500);
-  color: #ffffff;
+  color: #8a8a8a;
   text-align: center;
-  padding: 15px 20px;
-  margin-top: 40px;
+  border-top: 1px solid #cccccc;
+  width: 80%;
+  margin: 20px auto;
 }
 
 footer p {
-  margin: 0;
+  margin-top: 15px;
   font-size: 0.9em;
 }
 
 /* Dark mode styles */
 body.dark-mode {
-  background-color: #121212;
+  background-color: var(--black);
   color: #ffffff;
 }
 
-body.dark-mode header,
+body.dark-mode header {
+  border-bottom: 1px solid #27272a;
+  background: none;
+  background-color: #0e0e11;
+}
+
+body.dark-mode header h1 {
+  border: 1px solid var(--color-600);
+  border-radius: 5px;
+  padding: 5px 10px;
+  color: var(--color-600);
+}
+
 body.dark-mode footer {
-  background-color: var(--picton-blue-900);
+  background-color: var(--black);
+  border-top: 1px solid #27272a;
+  width: 80%;
+  margin: 20px auto;
 }
 
 body.dark-mode .github-link {
-  color: #ffffff;
+  color: var(--white);
 }
 
-body.dark-mode .theme-button {
-  background-color: var(--picton-blue-700);
-  color: #ffffff;
+body.dark-mode .button {
+  background-color: var(--black);
+  border: 1px solid var(--color-600);
+  color: var(--color-600);
+  border-radius: 5px;
 }
 
-body.dark-mode .theme-button:hover {
-  background-color: var(--picton-blue-600);
+body.dark-mode .button:hover {
+  border: 1px solid var(--color-700);
+  color: var(--color-700);
 }
 
-body.dark-mode #startButton {
-  background-color: var(--picton-blue-700);
-  color: #ffffff;
-}
-
-body.dark-mode #startButton:hover {
-  background-color: var(--picton-blue-600);
-}
 
 body.dark-mode .parameter input,
 body.dark-mode .parameter button {
@@ -228,17 +229,16 @@ body.dark-mode .parameter button {
 }
 
 body.dark-mode .voice-button.active {
-  background-color: var(--picton-blue-700);
+  background-color: var(--color-700);
   color: #ffffff;
 }
 
 body.dark-mode .voice-button:hover {
-  background-color: var(--picton-blue-800);
+  background-color: var(--color-800);
 }
 
-body.dark-mode h1,
 body.dark-mode footer p {
-  color: #ffffff;
+  color: #8a8a8a;
 }
 
 /* Responsive adjustments */
