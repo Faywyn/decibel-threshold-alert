@@ -5,6 +5,7 @@ const thresholdInput = document.getElementById('threshold');
 const thresholdDurationInput = document.getElementById('thresholdDuration');
 const themeToggle = document.getElementById('themeToggle');
 const voiceOnlyToggle = document.getElementById('voiceOnlyToggle');
+const beepFrequency = document.getElementById('beepFrequency');
 
 // Variables
 let isRunning = false;
@@ -16,6 +17,11 @@ let wakeLock = null;
 // Update thresholdDuration when input changes
 thresholdDurationInput.addEventListener('input', () => {
   window.thresholdDuration = parseInt(thresholdDurationInput.value);
+});
+
+// Update beepFrequency when input changes
+beepFrequency.addEventListener('input', () => {
+  window.beepFrequency = parseFloat(beepFrequency.value);
 });
 
 // Voice Only filter flag
@@ -172,4 +178,5 @@ themeToggle.addEventListener('click', () => {
 // Expose variables and functions needed by sound.js
 window.decibelLevelDisplay = decibelLevelDisplay;
 window.thresholdInput = thresholdInput;
+window.beepFrequency = beepFrequency.value;
 window.updateChart = updateChart;

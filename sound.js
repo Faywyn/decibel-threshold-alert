@@ -162,9 +162,11 @@ function playBeep() {
 
   const duration = 100; // Beep duration in milliseconds
   const pause = 100; // Pause between beeps in milliseconds
-  const frequency = 1000; // Frequency in Hz
+  const frequency = window.beepFrequency; // Beep frequency in Hz 
   const volume = 0.1; // Volume (0 to 1)
   const type = 'sine'; // Waveform type
+
+  console.log('Playing beep sequence', frequency, 'Hz');
 
   // Function to play a single beep
   function beep(timeOffset) {
