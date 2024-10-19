@@ -10,6 +10,7 @@ and noise-sensitive environments.
 - Adjustable parameters:
   - Decibel Threshold (dB)
   - Threshold Duration (ms)
+  - Beep Frequency (Hz)
   - Voice Only Filter (On/Off)
 - Audio alerts when noise levels exceed the threshold.
 - Dark and Light themes with a toggle button.
